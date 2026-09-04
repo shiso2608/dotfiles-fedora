@@ -1,0 +1,14 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+
+sudo dnf install -y {{ .packages.dnf | join " " }}
+
+flatpak install -y {{ .packages.flatpak | join " " }}
+
+if command -v cargo &> /dev/null; then
+  {{ range .packages.cargo -}}
+  cargo install --locked {{ . }}
+  {{ end -}}
+fi
+
+{{ end -}}

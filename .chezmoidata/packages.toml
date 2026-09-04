@@ -1,0 +1,30 @@
+[packages]
+dnf = [
+  "age",
+  "amd-ucode-firmware",
+  "atuin",
+  "chezmoi",
+  "ffmpegthumbnailer",
+  "gcc",
+  "neovim",
+  "os-prober",
+  "rclone",
+  "snapper",
+  "trash-cli",
+  "zsh",
+  "zsh-autosuggestions",
+  "zsh-syntax-highlighting",
+]
+flatpak = [
+  "com.bitwarden.desktop",
+  "com.brave.Browser",
+  "com.super_productivity.SuperProductivity",
+  "com.valvesoftware.Steam",
+  "dev.zed.Zed",
+  "io.github.ilya_zlobintsev.LACT",
+  "me.proton.Mail",
+  "org.prismlauncher.PrismLauncher",
+]
+cargo = [
+  "starship",
+]

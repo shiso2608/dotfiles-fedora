@@ -1,0 +1,32 @@
+# Created by newuser for 5.9
+alias backup-run='rclone sync ~ /run/media/user/BackupDrive/backup --include-from ~/.config/rclone/backup_list --progress'
+alias age-bit='age -d -i ~/.config/age/key.txt ~/Documents/confidential/bitwarden.age | less'
+alias age-pass='age -d -i ~/.config/age/key.txt ~/Documents/confidential/passphrase.age | less'
+
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
+autoload -U compinit
+compinit
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+set_opts=(
+    HIST_FCNTL_LOCK HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+    NO_APPEND_HISTORY NO_EXTENDED_HISTORY NO_HIST_EXPIRE_DUPS_FIRST
+    NO_HIST_FIND_NO_DUPS NO_HIST_IGNORE_ALL_DUPS NO_HIST_SAVE_NO_DUPS
+)
+for opt in "${set_opts[@]}"; do
+    setopt "$opt"
+done
+unset opt set_opts
+
+export PATH="$HOME/.cargo/bin:$PATH"
+
+eval "$(atuin init zsh)"
+eval "$(starship init zsh)"
+
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

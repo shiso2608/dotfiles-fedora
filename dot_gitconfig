@@ -1,0 +1,9 @@
+[user]
+        name = shiso2608
+        email = 254681157+shiso2608@users.noreply.github.com
+[init]
+        defaultBranch = main
+[core]
+        editor = nvim
+[url "git@github.com:"]
+        insteadOf = https://github.com/
