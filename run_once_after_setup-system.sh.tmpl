@@ -1,0 +1,82 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "==> システム初期設定スクリプトを開始します..."
+
+# 1. パッケージマネージャーの高速化
+echo "==> /etc/dnf/dnf.conf の高速化設定..."
+sudo sed -i '/^max_parallel_downloads=/d' /etc/dnf/dnf.conf
+sudo sed -i '/^fastestmirror=/d' /etc/dnf/dnf.conf
+echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf > /dev/null
+echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf > /dev/null
+
+# 2. システム全体のパッケージを更新
+echo "==> システムパッケージの更新..."
+sudo dnf --refresh upgrade -y
+
+# 3. RPM Fusion リポジトリを追加
+echo "==> RPM Fusion リポジトリの追加..."
+FEDORA_VER=$(rpm -E %fedora)
+sudo dnf install -y \
+  "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${FEDORA_VER}.noarch.rpm" \
+  "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VER}.noarch.rpm" || true
+
+# 不要な Steam / NVIDIA リポジトリを無効化
+sudo dnf config-manager setopt rpmfusion-nonfree-steam.enabled=0
+sudo dnf config-manager setopt rpmfusion-nonfree-nvidia-driver.enabled=0
+
+# 4. マルチメディアコーデックを追加
+echo "==> マルチメディアコーデックのインストール..."
+sudo dnf swap -y ffmpeg-free ffmpeg --allowerasing
+sudo dnf install -y @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+
+# 5. ハードウェアアクセラレーションを有効化 (AMD GPU 向け 64bit)
+echo "==> AMD GPU 向けハードウェアアクセラレーションの有効化..."
+sudo dnf install -y mesa-va-drivers-freeworld
+sudo dnf swap -y mesa-vulkan-drivers mesa-vulkan-drivers-freeworld
+
+# 6. Flathub の制限解除
+echo "==> Flathub リポジトリのフル有効化..."
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# 7. スナップショット (Snapper) の設定
+echo "==> Snapper のインストールと設定..."
+sudo dnf install -y snapper
+if [ ! -f /etc/snapper/configs/root ]; then
+  sudo snapper -c root create-config /
+fi
+sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
+sudo snapper -c root create -d "初回スナップショット (chezmoi)"
+
+# 8. ファームウェアの更新
+echo "==> ファームウェアの更新確認と適用..."
+fwupdmgr get-updates -y || true
+sudo fwupdmgr update -y || true
+
+# 9. システムログの容量制限 (500M)
+echo "==> Journald のログ容量制限を設定..."
+sudo mkdir -p /etc/systemd/journald.conf.d
+cat << 'EOF' | sudo tee /etc/systemd/journald.conf.d/00-journal-size.conf > /dev/null
+[Journal]
+SystemMaxUse=500M
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-journald
+
+# 10. ホーム下のディレクトリ名を英語に変更
+echo "==> XDG ユーザーディレクトリの英語化..."
+LANG=C xdg-user-dirs-update --force
+
+# GNOME デスクトップ環境設定
+echo "==> GNOME の設定を適用中..."
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+# ibus-anthy 設定（インストールされている場合のみ実行）
+if gsettings list-schemas | grep -q "org.freedesktop.ibus.engine.anthy.common"; then
+  echo "==> ibus-anthy の初期入力モードを英数に設定中..."
+  gsettings set org.freedesktop.ibus.engine.anthy.common input-mode 3
+fi
+
+echo "==> システム初期設定が完了しました！"
+{{ end -}}
