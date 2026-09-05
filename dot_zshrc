@@ -24,6 +24,8 @@ done
 unset opt set_opts
 
 export PATH="$HOME/.cargo/bin:$PATH"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 eval "$(atuin init zsh)"
 eval "$(starship init zsh)"

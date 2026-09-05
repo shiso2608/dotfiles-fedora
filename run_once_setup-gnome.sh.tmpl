@@ -1,0 +1,39 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}                                                                                                                                                                         
+#!/bin/bash
+set -euo pipefail
+sleep 1
+
+# GNOME デスクトップ環境設定
+echo "==> GNOME の設定を適用中..."
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+# 省電力・電源設定
+gsettings set org.gnome.desktop.session idle-delay 1200
+gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 1500
+
+# 夜間モード設定（有効化 & 自動スケジュール）
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-from 18.0
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-to 6.0
+
+# マウス設定（加速度を無効化）
+gsettings set org.gnome.desktop.peripherals.mouse accel-profile 'flat'
+
+# プライバシー設定（ファイル履歴の保存期間を 30 日に設定）
+gsettings set org.gnome.desktop.privacy recent-files-max-age 30
+
+# ゴミ箱と一時ファイルの自動削除を有効化
+gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+gsettings set org.gnome.desktop.privacy remove-old-temp-files true
+
+# デフォルトの入力ソースを Anthy に設定
+gsettings set org.gnome.desktop.input-sources sources "[('ibus', 'anthy'), ('xkb', 'us')]"
+
+# ibus-anthy 設定（インストールされている場合のみ実行）
+if gsettings list-schemas | grep -q "org.freedesktop.ibus.engine.anthy.common"; then
+  echo "==> ibus-anthy の初期入力モードを英数に設定中..."
+  gsettings set org.freedesktop.ibus.engine.anthy.common input-mode 3
+fi
+
+echo "==> GNOME の設定が完了しました！"
+{{ end -}}

@@ -68,15 +68,5 @@ sudo systemctl restart systemd-journald
 echo "==> XDG ユーザーディレクトリの英語化..."
 LANG=C xdg-user-dirs-update --force
 
-# GNOME デスクトップ環境設定
-echo "==> GNOME の設定を適用中..."
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-
-# ibus-anthy 設定（インストールされている場合のみ実行）
-if gsettings list-schemas | grep -q "org.freedesktop.ibus.engine.anthy.common"; then
-  echo "==> ibus-anthy の初期入力モードを英数に設定中..."
-  gsettings set org.freedesktop.ibus.engine.anthy.common input-mode 3
-fi
-
 echo "==> システム初期設定が完了しました！"
 {{ end -}}
