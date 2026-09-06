@@ -4,6 +4,7 @@ dnf = [
   "amd-ucode-firmware",
   "atuin",
   "chezmoi",
+  "dconf-editor",
   "ffmpegthumbnailer",
   "gcc",
   "neovim",
