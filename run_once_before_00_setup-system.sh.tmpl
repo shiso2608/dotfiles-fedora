@@ -46,7 +46,20 @@ sudo dnf install -y snapper
 if [ ! -f /etc/snapper/configs/root ]; then
   sudo snapper -c root create-config /
 fi
-sudo sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
+
+# タイムラインスナップショットの設定
+sudo snapper -c root set-config \
+  TIMELINE_CREATE=yes \
+  TIMELINE_LIMIT_HOURLY=0 \
+  TIMELINE_LIMIT_DAILY=6 \
+  TIMELINE_LIMIT_WEEKLY=3 \
+  TIMELINE_LIMIT_MONTHLY=2 \
+  TIMELINE_LIMIT_YEARLY=0
+
+# 定期作成タイマーの有効化
+sudo systemctl enable --now snapper-timeline.timer
+sudo systemctl enable --now snapper-cleanup.timer
+
 sudo snapper -c root create -d "初回スナップショット (chezmoi)"
 
 # 8. ファームウェアの更新
