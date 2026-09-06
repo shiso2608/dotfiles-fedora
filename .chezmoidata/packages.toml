@@ -8,6 +8,7 @@ dnf = [
   "fastfetch",
   "ffmpegthumbnailer",
   "gcc",
+  "lact",
   "neovim",
   "rclone",
   "snapper",
@@ -23,7 +24,6 @@ flatpak = [
   "com.super_productivity.SuperProductivity",
   "com.valvesoftware.Steam",
   "dev.zed.Zed",
-  "io.github.ilya_zlobintsev.LACT",
   "me.proton.Mail",
   "org.prismlauncher.PrismLauncher",
 ]

@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "==> システムサービスの有効化..."
+
+# LACT デーモンの有効化と起動
+sudo systemctl enable --now lactd
+
+echo "==> サービスの設定が完了しました！"
+{{ end -}}

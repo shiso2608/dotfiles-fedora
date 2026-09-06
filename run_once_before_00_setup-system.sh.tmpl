@@ -22,6 +22,10 @@ sudo dnf install -y \
   "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${FEDORA_VER}.noarch.rpm" \
   "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VER}.noarch.rpm" || true
 
+# Copr リポジトリの追加
+echo "==> Copr リポジトリの追加..."
+sudo dnf copr enable -y ilyaz/LACT
+
 # 不要な Steam / NVIDIA リポジトリを無効化
 sudo dnf config-manager setopt rpmfusion-nonfree-steam.enabled=0
 sudo dnf config-manager setopt rpmfusion-nonfree-nvidia-driver.enabled=0
