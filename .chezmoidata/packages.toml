@@ -5,6 +5,7 @@ dnf = [
   "atuin",
   "chezmoi",
   "dconf-editor",
+  "ddcutil",
   "fastfetch",
   "ffmpegthumbnailer",
   "gcc",
