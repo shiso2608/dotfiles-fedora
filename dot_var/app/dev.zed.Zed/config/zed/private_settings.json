@@ -7,6 +7,8 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ui_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_family": "JetBrainsMono Nerd Font",
   "restore_on_startup": "launchpad",
   "project_panel": {
     "dock": "left"
@@ -31,6 +33,7 @@
     "Noto Sans Mono CJK JP"
   ],
   "terminal": {
+    "font_family": "JetBrainsMono Nerd Font",
     "font_fallbacks": [
       "Noto Sans Mono CJK JP"
     ],

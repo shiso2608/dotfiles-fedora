@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "==> vimdiff (Neovim ラッパー) の配置..."
+
+NVIM_PATH="$(command -v nvim || true)"
+
+if [ -n "$NVIM_PATH" ]; then
+    sudo tee /usr/local/bin/vimdiff > /dev/null << 'EOF'
+#!/bin/sh
+exec nvim -d "$@"
+EOF
+    sudo chmod +x /usr/local/bin/vimdiff
+    echo "vimdiff -> nvim -d の設定が完了しました。"
+else
+    echo "警告: neovim (nvim) がインストールされていないため、vimdiff ラッパーを作成できませんでした。" >&2
+fi
+{{ end -}}
