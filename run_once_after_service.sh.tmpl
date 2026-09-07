@@ -7,5 +7,25 @@ echo "==> システムサービスの有効化..."
 # LACT デーモンの有効化と起動
 sudo systemctl enable --now lactd
 
+# zsh のパスを取得
+ZSH_PATH="$(command -v zsh || true)"
+
+if [ -n "$ZSH_PATH" ]; then
+    # /etc/shells に zsh が登録されているか確認
+    if grep -qx "$ZSH_PATH" /etc/shells; then
+        # 現在のデフォルトシェルが zsh でない場合のみ sudo で chsh を実行
+        if [ "$SHELL" != "$ZSH_PATH" ]; then
+            echo "デフォルトシェルを $ZSH_PATH に変更します..."
+            sudo chsh -s "$ZSH_PATH" "$USER"
+        else
+            echo "すでにデフォルトシェルは zsh に設定されています。"
+        fi
+    else
+        echo "警告: $ZSH_PATH が /etc/shells に登録されていません。" >&2
+    fi
+else
+    echo "警告: zsh がインストールされていません。" >&2
+fi
+
 echo "==> サービスの設定が完了しました！"
 {{ end -}}
