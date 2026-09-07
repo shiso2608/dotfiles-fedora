@@ -1,0 +1,22 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+set -euo pipefail
+
+# rustup が未インストールの場合は非対話モード (-y) でインストール
+if ! command -v rustup &> /dev/null; then
+  echo "==> Rust (rustup) をインストール中..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
+
+# シェル環境変数（環境変数 PATH）を読み込み
+if [ -f "$HOME/.cargo/env" ]; then
+  # shellcheck source=/dev/null
+  source "$HOME/.cargo/env"
+fi
+
+# 必要なコンポーネントの追加
+echo "==> rustup コンポーネント (rust-analyzer, rust-src) を追加中..."
+rustup component add rust-analyzer rust-src
+
+echo "==> Rust のセットアップが完了しました！"
+{{ end -}}
