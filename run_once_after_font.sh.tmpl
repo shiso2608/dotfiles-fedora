@@ -1,0 +1,42 @@
+{{ if eq .chezmoi.osRelease.id "fedora" -}}
+#!/bin/bash
+set -euo pipefail
+
+FONT_NAME="JetBrainsMono"
+FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerd"
+TMP_DIR="$(mktemp -d)"
+
+# 終了時に一時ディレクトリを確実に削除
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+echo "==> JetBrains Mono Nerd Font のインストールを開始します..."
+
+# 必要なコマンドの存在チェック
+for cmd in curl unzip fc-cache; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "エラー: $cmd が見つかりません。インストールしてください。" >&2
+        exit 1
+    fi
+done
+
+# フォントディレクトリの作成
+mkdir -p "$FONT_DIR"
+
+# ダウンロードと展開
+echo "フォントアーカイブをダウンロード中..."
+curl -fLo "$TMP_DIR/$FONT_NAME.zip" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$FONT_NAME.zip"
+
+echo "フォントを展開中..."
+unzip -o "$TMP_DIR/$FONT_NAME.zip" -d "$FONT_DIR/" > /dev/null
+
+# フォントキャッシュの更新
+echo "フォントキャッシュを更新中..."
+fc-cache -fv "$FONT_DIR"
+
+# Ptyxis へのフォント設定適用
+echo "Ptyxis のフォント設定を適用中..."
+gsettings set org.gnome.Ptyxis use-system-font false
+gsettings set org.gnome.Ptyxis font-name 'JetBrainsMono Nerd Font 12'
+
+echo "==> フォントのインストールが完了しました！"
+{{ end -}}
