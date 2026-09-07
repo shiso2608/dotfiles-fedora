@@ -22,6 +22,20 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "One Dark",
+    "dark": "Tokyo Night",
   },
+  "auto_install_extensions": {
+    "tokyo-night": true,
+  },
+  "buffer_font_fallbacks": [
+    "Noto Sans Mono CJK JP"
+  ],
+  "terminal": {
+    "font_fallbacks": [
+      "Noto Sans Mono CJK JP"
+    ],
+  },
+  "ui_font_fallbacks": [
+    "Noto Sans Mono CJK JP"
+  ],
 }
